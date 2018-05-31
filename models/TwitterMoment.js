@@ -24,7 +24,7 @@ var TwitterMomentSchema = new Schema({
 	// `likes` is required and of type String
 	likes: {
 		type: Number,
-		required: true,
+		default: 0,
 	},
 	// `link` is required and of type String
 	link: {
