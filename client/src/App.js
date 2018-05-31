@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Jumbotron, Button } from 'reactstrap';
 import Scrape from './components/Scrape';
+import TwitterMoment from './containers/TwitterMoment';
 import logo from './logo.svg';
 import './App.css';
 
@@ -31,7 +32,9 @@ class App extends Component {
 						<Scrape btnClicked={this.handler} />
 					</p>
 				</Jumbotron>
-				{this.state.scrapeBtnClicked && <Button>Render Tweets</Button>}
+				<div className="col-sm-9 m-auto">
+					{this.state.scrapeBtnClicked && <TwitterMoment />}
+				</div>
 			</div>
 		);
 	}
