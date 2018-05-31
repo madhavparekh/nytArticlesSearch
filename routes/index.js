@@ -46,13 +46,15 @@ router.get('/scrape', function(req, res) {
 					.children('div')
 					.children('img')
 					.attr('src');
-				result.likes = $(this)
+				var likes = $(this)
 					.children()
 					.children()
 					.children('.MomentCapsuleLikesCount')
 					.text()
 					.trim()
 					.split(' ')[0];
+
+				result.likes = likes || 0;
 
 				// Create a new Article using the `result` object built from scraping
 				//console.log('#####\n', result, '\n#####');
@@ -62,7 +64,7 @@ router.get('/scrape', function(req, res) {
 				})
 					.then(function(dbTwitterMoment) {
 						// View the added result in the console
-						console.log(dbTwitterMoment);
+						//console.log(dbTwitterMoment);
 					})
 					.catch(function(err) {
 						// If an error occurred, send it to the client
@@ -71,7 +73,7 @@ router.get('/scrape', function(req, res) {
 			});
 
 			// If we were able to successfully scrape and save an Article, send a message to the client
-			res.send('Scrape Complete');
+			res.send('Scrapped');
 		});
 });
 
