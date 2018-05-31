@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import Aux from '../hoc/Aux';
+import Aux from '../hoc/Auxilary';
 
 class Scrape extends Component {
 	handleBtnClick = async (e) => {
