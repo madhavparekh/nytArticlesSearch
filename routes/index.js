@@ -8,9 +8,8 @@ var axios = require('axios');
 var cheerio = require('cheerio');
 
 // Require all models
-//var db = require('../models');
-var TwitterMoment = require('../models/TwitterMoment');
-var Comment = require('../models/Comment');
+var db = require('../models');
+
 // Routes
 
 // A GET route for scraping the echoJS website
@@ -60,8 +59,9 @@ router.get('/scrape', function(req, res) {
 				result.isSaved = false;
 
 				// Create a new Article using the `result` object built from scraping
-				//console.log('#####\n', result, '\n#####');
-				TwitterMoment.create({ link: result.link }, result, {
+				console.log('#####Line 62 \n', result, '\n#####');
+
+				db.TwitterMoment.findOneAndUpdate({ link: result.link }, result, {
 					upsert: true,
 					new: true,
 				})
@@ -83,7 +83,7 @@ router.get('/scrape', function(req, res) {
 // Route for getting all Articles from the db
 router.get('/moments', function(req, res) {
 	// Grab every document in the Articles collection
-	TwitterMoment.find({})
+	db.TwitterMoment.find({})
 		.sort({ _id: -1 })
 		.limit(20)
 		.then(function(dbTwitterMoment) {
@@ -100,7 +100,7 @@ router.get('/moments', function(req, res) {
 router.post('/moments/save/:id', function(req, res) {
 	console.log('line100', req.body);
 	// Create a new Comment and pass the req.body to the entry
-	TwitterMoment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+	db.TwitterMoment.findByIdAndUpdate(req.params.id, req.body, { new: true })
 		.then(function(dbTwitterMoment) {
 			// If we were able to successfully update an Article, send it back to the client
 			console.log(dbTwitterMoment);
@@ -115,7 +115,7 @@ router.post('/moments/save/:id', function(req, res) {
 // Route for grabbing a specific Article by id, populate it with it's Comment
 router.get('/articles/:id', function(req, res) {
 	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-	TwitterMoment.findOne({ _id: req.params.id })
+	db.TwitterMoment.findOne({ _id: req.params.id })
 		// ..and populate all of the Comments associated with it
 		.populate('comment')
 		.then(function(dbTwitterMoment) {
@@ -131,7 +131,7 @@ router.get('/articles/:id', function(req, res) {
 // Route for saving/updating an Article's associated Comment
 router.post('/articles/:id', function(req, res) {
 	// Create a new Comment and pass the req.body to the entry
-	Comment.create(req.body)
+	db.Comment.create(req.body)
 		.then(function(dbComment) {
 			// If a Comment was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Comment
 			// { new: true } tells the query that we want it to return the updated User -- it returns the original by default
