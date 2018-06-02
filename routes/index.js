@@ -20,7 +20,7 @@ router.get('/scrape', function(req, res) {
 		// Then, we load that into cheerio and save it to $ for a shorthand selector
 		console.log('response line 21', response.status);
 		var $ = cheerio.load(response.data);
-		console.log($('line23: ','.MomentCapsuleSummary-title').text());
+		console.log('line23: ', $('.MomentCapsuleSummary-title').text());
 		// Now, we grab every h2 within an article tag, and do the following:
 		$('.MomentCapsuleSummary').each(function(i, element) {
 			// Save an empty result object
