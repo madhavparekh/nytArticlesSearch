@@ -20,7 +20,7 @@ class Scrape extends Component {
 			<Aux>
 				<p className="lead">
 					<Button color="primary" onClick={this.handleBtnClick}>
-						Scrape
+						Scrape Recent
 					</Button>
 				</p>
 			</Aux>
