@@ -7,7 +7,8 @@
 		"watch": "nodemon ./src/bin/www",
 		"devwin": "set NODE_ENV=development&yarn watch",
 		"dev": "NODE_ENV=development&yarn watch",
-		"test": "echo no test"
+		"test": "echo no test",
+		"heroku-postbuild": "cd client && yarn && yarn run build"
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
