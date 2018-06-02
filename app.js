@@ -22,7 +22,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to the Mongo DB
-mongoose.connect('mongodb://localhost/TwitterMomentScrapper');
+var databaseUri = 'mongodb://localhost/TwitterMomentScrapper';
+
+if (process.env.MONGODB_URI) {
+	mongoose.connect(process.env.MONGODB_URI);
+} else {
+	mongoose.connect(databaseUri);
+}
+
+var db = mongoose.connection;
+
+//show any mongoose error
+db.on('error', (err) => {
+	console.log('Mongoose Error: ', err);
+});
+
+db.once('open', () => {
+	console.log('Mongoose connectoion successful');
+});
 
 app.use('/', indexRouter);
 //app.use('/users', usersRouter);
