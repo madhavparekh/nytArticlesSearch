@@ -13,7 +13,9 @@ var usersRouter = require('./routes/users');
 var databaseUri = 'mongodb://localhost/TwitterMomentScrapper';
 
 if (process.env.MONGODB_URI) {
-	mongoose.connect(process.env.MONGODB_URI);
+	mongoose.connect(
+		'mongodb://heroku_f8vhn2zn:vakoecotp8b7mqtt57hqd11eto@ds245250.mlab.com:45250/heroku_f8vhn2zn'
+	);
 } else {
 	mongoose.connect(databaseUri);
 }
