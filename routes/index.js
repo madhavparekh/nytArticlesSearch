@@ -16,69 +16,68 @@ var db = require('../models');
 router.get('/scrape', function(req, res) {
 	console.log('scraping');
 	// First, we grab the body of the html with request
-	axios
-		.get('https://twitter.com/i/moments?category_id=1')
-		.then(function(response) {
-			// Then, we load that into cheerio and save it to $ for a shorthand selector
-			var $ = cheerio.load(response.data);
-			console.log($('.MomentCapsuleSummary-title').text());
-			// Now, we grab every h2 within an article tag, and do the following:
-			$('.MomentCapsuleSummary').each(function(i, element) {
-				// Save an empty result object
-				var result = {};
-				//console.log('LINE - 26', $(this));
-				console.log('line 30', $('.MomentCapsuleSummary-title').text());
-				// Add the text and href of every link, and save them as properties of the result object
-				result.title = $(this)
-					.children('div')
-					.children('.MomentCapsuleSummary-title')
-					.text()
-					.trim();
-				result.description = $(this)
-					.children('div')
-					.children('.MomentCapsuleSummary-description')
-					.text()
-					.trim();
-				result.link = $(this)
-					.children('a')
-					.attr('href');
-				result.img = $(this)
-					.children('a')
-					.children('div')
-					.children('img')
-					.attr('src');
-				var likes = $(this)
-					.children()
-					.children()
-					.children('.MomentCapsuleLikesCount')
-					.text()
-					.trim()
-					.split(' ')[0];
+	axios.get('https://twitter.com/i/moments').then(function(response) {
+		// Then, we load that into cheerio and save it to $ for a shorthand selector
+		console.log('response line 23', response);
+		var $ = cheerio.load(response.data);
+		console.log($('.MomentCapsuleSummary-title').text());
+		// Now, we grab every h2 within an article tag, and do the following:
+		$('.MomentCapsuleSummary').each(function(i, element) {
+			// Save an empty result object
+			var result = {};
+			//console.log('LINE - 26', $(this));
+			console.log('line 30', $('.MomentCapsuleSummary-title').text());
+			// Add the text and href of every link, and save them as properties of the result object
+			result.title = $(this)
+				.children('div')
+				.children('.MomentCapsuleSummary-title')
+				.text()
+				.trim();
+			result.description = $(this)
+				.children('div')
+				.children('.MomentCapsuleSummary-description')
+				.text()
+				.trim();
+			result.link = $(this)
+				.children('a')
+				.attr('href');
+			result.img = $(this)
+				.children('a')
+				.children('div')
+				.children('img')
+				.attr('src');
+			var likes = $(this)
+				.children()
+				.children()
+				.children('.MomentCapsuleLikesCount')
+				.text()
+				.trim()
+				.split(' ')[0];
 
-				result.likes = likes || 0;
+			result.likes = likes || 0;
 
-				result.isSaved = false;
+			result.isSaved = false;
 
-				// Create a new Article using the `result` object built from scraping
-				console.log('#####Line 62 \n', result, '\n#####');
+			// Create a new Article using the `result` object built from scraping
+			console.log('#####Line 62 \n', result, '\n#####');
 
-				db.TwitterMoment.findOneAndUpdate({ link: result.link }, result, {
-					upsert: true,
-					new: true,
+			db.TwitterMoment.findOneAndUpdate({ link: result.link }, result, {
+				upsert: true,
+				new: true,
+			})
+				.then(function(dbTwitterMoment) {
+					// View the added result in the console
+					//console.log(dbTwitterMoment);
 				})
-					.then(function(dbTwitterMoment) {
-						// View the added result in the console
-						//console.log(dbTwitterMoment);
-					})
-					.catch(function(err) {
-						// If an error occurred, send it to the client
-						return res.json(err);
-					});
-			});
-
-			// If we were able to successfully scrape and save an Article, send a message to the client
-			res.send('Scrapped');
+				.catch(function(err) {
+					// If an error occurred, send it to the client
+					return res.json(err);
+				});
 		});
+
+		// If we were able to successfully scrape and save an Article, send a message to the client
+		res.send('Scrapped');
+	});
 });
 
 // Route for getting all Articles from the db
