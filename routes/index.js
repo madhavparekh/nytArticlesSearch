@@ -56,6 +56,8 @@ router.get('/scrape', function(req, res) {
 
 				result.likes = likes || 0;
 
+				result.isSaved = false;
+
 				// Create a new Article using the `result` object built from scraping
 				//console.log('#####\n', result, '\n#####');
 				db.TwitterMoment.findOneAndUpdate({ link: result.link }, result, {
@@ -81,8 +83,26 @@ router.get('/scrape', function(req, res) {
 router.get('/moments', function(req, res) {
 	// Grab every document in the Articles collection
 	db.TwitterMoment.find({})
+		.sort({ _id: -1 })
+		.limit(20)
 		.then(function(dbTwitterMoment) {
 			// If we were able to successfully find Articles, send them back to the client
+			res.json(dbTwitterMoment);
+		})
+		.catch(function(err) {
+			// If an error occurred, send it to the client
+			res.json(err);
+		});
+});
+
+// Route for saving/updating an Article's associated Comment
+router.post('/moments/save/:id', function(req, res) {
+	console.log('line100', req.body);
+	// Create a new Comment and pass the req.body to the entry
+	db.TwitterMoment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+		.then(function(dbTwitterMoment) {
+			// If we were able to successfully update an Article, send it back to the client
+			console.log(dbTwitterMoment);
 			res.json(dbTwitterMoment);
 		})
 		.catch(function(err) {
