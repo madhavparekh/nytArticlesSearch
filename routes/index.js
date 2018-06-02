@@ -14,6 +14,7 @@ var db = require('../models');
 
 // A GET route for scraping the echoJS website
 router.get('/scrape', function(req, res) {
+	console.log('scraping');
 	// First, we grab the body of the html with request
 	axios
 		.get('https://twitter.com/i/moments?category_id=1')

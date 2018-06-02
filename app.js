@@ -12,7 +12,7 @@ var usersRouter = require('./routes/users');
 // Connect to the Mongo DB
 var databaseUri = 'mongodb://localhost/TwitterMomentScrapper';
 
-mongoose.Promise = Promise;
+//mongoose.Promise = Promise;
 
 if (process.env.MONGODB_URI) {
 	mongoose.connect(process.env.MONGODB_URI);
