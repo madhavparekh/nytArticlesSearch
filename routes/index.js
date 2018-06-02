@@ -60,7 +60,7 @@ router.get('/scrape', function(req, res) {
 
 				// Create a new Article using the `result` object built from scraping
 				//console.log('#####\n', result, '\n#####');
-				db.TwitterMoment.findOneAndUpdate({ link: result.link }, result, {
+				db.TwitterMoment.create({ link: result.link }, result, {
 					upsert: true,
 					new: true,
 				})
