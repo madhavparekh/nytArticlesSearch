@@ -10,8 +10,8 @@ class SacBeeLatest extends Component {
 		};
 	}
 
-	componentDidMount = async () => {
-		var res = await fetch('/moments', {
+	loadData = async () => {
+		var res = await fetch('/latest/', {
 			method: 'GET',
 		});
 		if (res.status === 401) {
@@ -24,12 +24,23 @@ class SacBeeLatest extends Component {
 		}
 	};
 
+	componentDidMount() {
+		this.loadData(this.props.personId);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.update !== nextProps.update) {
+			this.loadData(nextProps.personId);
+		}
+	}
+
 	render() {
 		return (
 			<Aux>
-				{this.state.moments.map((item, indx) => {
-					return <RenderLatest key={indx} item={item} />;
-				})}
+				{this.state.moments &&
+					this.state.moments.map((item, indx) => {
+						return <RenderLatest key={indx} item={item} reloadData={this.loadData}/>;
+					})}
 			</Aux>
 		);
 	}
