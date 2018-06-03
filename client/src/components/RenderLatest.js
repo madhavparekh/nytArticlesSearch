@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 import Aux from '../hoc/Auxilary';
 
-class RenderMoment extends Component {
+class RenderLatest extends Component {
 	constructor(props) {
 		super(props);
 		this.toggle = this.toggle.bind(this);
@@ -84,9 +84,9 @@ class RenderMoment extends Component {
 									>
 										Image Link
 									</Button>
-									<Button color="secondary" className="mx-1">
+									{/* <Button color="secondary" className="mx-1">
 										Likes: {this.props.item.likes}
-									</Button>
+									</Button> */}
 								</ButtonGroup>
 							</CardBody>
 							<div className="text-center">
@@ -108,4 +108,4 @@ class RenderMoment extends Component {
 	}
 }
 
-export default RenderMoment;
+export default RenderLatest;

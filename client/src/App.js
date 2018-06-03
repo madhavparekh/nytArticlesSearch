@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Jumbotron, Button } from 'reactstrap';
 import Scrape from './components/Scrape';
-import TwitterMoment from './containers/TwitterMoment';
+import SacBeeLatest from './containers/SacBeeLatest';
 import logo from './logo.svg';
 import './App.css';
 
@@ -23,9 +23,9 @@ class App extends Component {
 		return (
 			<div className="App">
 				<Jumbotron className="m-2 p-2">
-					<h1 className="app-name">Twitter Moments Scrapper</h1>
+					<h1 className="app-name">Sac Bee Latest News Scrapper</h1>
 					<p className="lead">
-						This app scrapes News articles from Twitter Moments. Try it out
+						This app scrapes News articles from Sac Bee. Try it out
 					</p>
 					<hr className="my-2" />
 					<p className="lead">
@@ -33,7 +33,7 @@ class App extends Component {
 					</p>
 				</Jumbotron>
 				<div className="col-sm-9 m-auto">
-					{this.state.scrapeBtnClicked && <TwitterMoment />}
+					{this.state.scrapeBtnClicked && <SacBeeLatest />}
 				</div>
 			</div>
 		);

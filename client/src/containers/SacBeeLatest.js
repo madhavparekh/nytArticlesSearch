@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Aux from '../hoc/Auxilary';
-import RenderMoment from '../components/RenderMoment';
+import RenderLatest from '../components/RenderLatest';
 
-class TwitterMoment extends Component {
+class SacBeeLatest extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -28,11 +28,11 @@ class TwitterMoment extends Component {
 		return (
 			<Aux>
 				{this.state.moments.map((item, indx) => {
-					return <RenderMoment key={indx} item={item} />;
+					return <RenderLatest key={indx} item={item} />;
 				})}
 			</Aux>
 		);
 	}
 }
 
-export default TwitterMoment;
+export default SacBeeLatest;

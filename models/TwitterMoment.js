@@ -22,10 +22,10 @@ var TwitterMomentSchema = new Schema({
 		required: true,
 	},
 	// `likes` is required and of type String
-	likes: {
-		type: Number,
-		default: 0,
-	},
+	// likes: {
+	// 	type: Number,
+	// 	default: 0,
+	// },
 	// `link` is required and of type String
 	link: {
 		type: String,
