@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Jumbotron, Button } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 import Scrape from './components/Scrape';
 import SacBeeLatest from './containers/SacBeeLatest';
@@ -12,19 +12,23 @@ class App extends Component {
 		this.state = {
 			scrapeBtnClicked: 0,
 			displaySaved: false,
+			disableSaveBtn: false
 		};
 		this.handler = this.handler.bind(this);
 		this.savedHandler = this.savedHandler.bind(this);
 	}
+
 	handler() {
 		this.setState({
 			scrapeBtnClicked: this.state.scrapeBtnClicked + 1,
+			disableSaveBtn: false
 		});
 	}
 
 	savedHandler(action) {
 		this.setState({
 			displaySaved: action,
+			disableSaveBtn: action
 		});
 	}
 
@@ -42,7 +46,7 @@ class App extends Component {
 							btnClicked={this.handler}
 							savedHandler={this.savedHandler}
 						/>
-						<SavedArticlesBtn savedHandler={this.savedHandler} />
+						<SavedArticlesBtn savedHandler={this.savedHandler} disableBtn={this.state.disableSaveBtn}/>
 					</p>
 				</Jumbotron>
 				<div className="col-sm-9 m-auto">
