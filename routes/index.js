@@ -17,16 +17,18 @@ router.get('/scrape', function(req, res) {
 	console.log('scraping');
 	// First, we grab the body of the html with request
 	axios.get('https://twitter.com/i/moments').then(function(response) {
+		console.log('#############Line 20 :', response);
+
 		// Then, we load that into cheerio and save it to $ for a shorthand selector
-		console.log('##########response line 21#############', response.data);
 		var $ = cheerio.load(response.data);
-		console.log('line23: ', $);
+
 		// Now, we grab every h2 within an article tag, and do the following:
 		$('.MomentCapsuleSummary').each(function(i, element) {
 			// Save an empty result object
 			var result = {};
-			//console.log('LINE - 26', $(this));
+
 			console.log('############line 29:##########');
+
 			// Add the text and href of every link, and save them as properties of the result object
 			result.title = $(this)
 				.children('div')
