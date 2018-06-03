@@ -19,6 +19,7 @@ var SacBeeLatestSchema = new Schema({
 	// `isSaved` type Boolean
 	isSaved: {
 		type: Boolean,
+		default: false,
 		required: true,
 	},
 	// `likes` is required and of type String
