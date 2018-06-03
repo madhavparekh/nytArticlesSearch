@@ -11,18 +11,19 @@ class Scrape extends Component {
 		if (res.status === 401) {
 			this.setState({ fail: true });
 		} else if (res.status === 200) {
+			
+			this.props.savedHandler(false);
 			this.props.btnClicked();
+			
 		}
 	};
 
 	render() {
 		return (
 			<Aux>
-				<p className="lead">
-					<Button color="primary" onClick={this.handleBtnClick}>
-						Scrape Recent
-					</Button>
-				</p>
+				<Button className='m-2' color="primary" onClick={this.handleBtnClick}>
+					Scrape Recent
+				</Button>
 			</Aux>
 		);
 	}
