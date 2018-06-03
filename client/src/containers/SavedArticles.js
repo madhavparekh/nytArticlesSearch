@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Aux from '../hoc/Auxilary';
-import RenderLatest from '../components/RenderLatest';
+import RenderSaved from './RenderSaved';
 
 class SavedArticles extends Component {
 	constructor(props) {
@@ -40,7 +40,7 @@ class SavedArticles extends Component {
 				{this.state.moments &&
 					this.state.moments.map((item, indx) => {
 						return (
-							<RenderLatest key={indx} item={item} reloadData={this.loadData} />
+							<RenderSaved key={indx} item={item} reloadData={this.loadData} />
 						);
 					})}
 			</Aux>
