@@ -6,9 +6,7 @@ import {
 	Card,
 	CardBody,
 	Collapse,
-	CardImg,
-	CardText,
-	CardLink,
+	CardText
 } from 'reactstrap';
 import Aux from '../hoc/Auxilary';
 
@@ -25,7 +23,7 @@ class RenderLatest extends Component {
 	onBtnClick = async (e) => {
 		this.props.item.isSaved = !this.props.item.isSaved;
 		
-		var res = await fetch(`/moments/save/${this.props.item._id}`, {
+		var res = await fetch(`/latest/save/${this.props.item._id}`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
