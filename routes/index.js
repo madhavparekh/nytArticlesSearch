@@ -71,76 +71,6 @@ router.get('/scrape', function(req, res) {
 	});
 });
 
-//Twitter
-// router.get('/scrape', function(req, res) {
-// 	console.log('scraping');
-// 	// First, we grab the body of the html with request
-// 	axios.get('https://twitter.com/i/moments').then(function(response) {
-// 		console.log('#############Line 20 :', response);
-
-// 		// Then, we load that into cheerio and save it to $ for a shorthand selector
-// 		var $ = cheerio.load(response.data);
-
-// 		// Now, we grab every h2 within an article tag, and do the following:
-// 		$('.MomentCapsuleSummary').each(function(i, element) {
-// 			// Save an empty result object
-// 			var result = {};
-
-// 			//console.log('############line 29:##########');
-
-// 			// Add the text and href of every link, and save them as properties of the result object
-// 			result.title = $(this)
-// 				.children('div')
-// 				.children('.MomentCapsuleSummary-title')
-// 				.text()
-// 				.trim();
-// 			result.description = $(this)
-// 				.children('div')
-// 				.children('.MomentCapsuleSummary-description')
-// 				.text()
-// 				.trim();
-// 			result.link = $(this)
-// 				.children('a')
-// 				.attr('href');
-// 			result.img = $(this)
-// 				.children('a')
-// 				.children('div')
-// 				.children('img')
-// 				.attr('src');
-// 			var likes = $(this)
-// 				.children()
-// 				.children()
-// 				.children('.MomentCapsuleLikesCount')
-// 				.text()
-// 				.trim()
-// 				.split(' ')[0];
-
-// 			result.likes = likes || 0;
-
-// 			result.isSaved = false;
-
-// 			// Create a new Article using the `result` object built from scraping
-// 			//console.log('#####Line 62 \n', result, '\n#####');
-
-// 			db.SacBeeLatest.findOneAndUpdate({ link: result.link }, result, {
-// 				upsert: true,
-// 				new: true,
-// 			})
-// 				.then(function(dbSacBeeLatest) {
-// 					// View the added result in the console
-// 					//console.log(dbSacBeeLatest);
-// 				})
-// 				.catch(function(err) {
-// 					// If an error occurred, send it to the client
-// 					return res.json(err);
-// 				});
-// 		});
-
-// 		// If we were able to successfully scrape and save an Article, send a message to the client
-// 		res.send('Scrapped');
-// 	});
-// });
-
 // Route for getting all Articles from the db
 router.get('/latest', function(req, res) {
 	// Grab every document in the Articles collection
@@ -174,7 +104,7 @@ router.get('/latest/saved', function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Comment
-router.post('/moments/save/:id', function(req, res) {
+router.post('/latest/save/:id', function(req, res) {
 	console.log('line100', req.body);
 	// Create a new Comment and pass the req.body to the entry
 	db.SacBeeLatest.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -190,7 +120,7 @@ router.post('/moments/save/:id', function(req, res) {
 });
 
 // Route for grabbing a specific Article by id, populate it with it's Comment
-router.get('/articles/:id', function(req, res) {
+router.get('/latest/:id', function(req, res) {
 	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
 	db.SacBeeLatest.findOne({ _id: req.params.id })
 		// ..and populate all of the Comments associated with it
@@ -206,7 +136,7 @@ router.get('/articles/:id', function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Comment
-router.post('/articles/:id', function(req, res) {
+router.post('/latest/:id', function(req, res) {
 	// Create a new Comment and pass the req.body to the entry
 	db.Comment.create(req.body)
 		.then(function(dbComment) {
