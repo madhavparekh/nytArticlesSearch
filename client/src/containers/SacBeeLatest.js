@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Aux from '../hoc/Auxilary';
-import RenderLatest from '../components/RenderLatest';
+import RenderLatest from './RenderLatest';
 
 class SacBeeLatest extends Component {
 	constructor(props) {
