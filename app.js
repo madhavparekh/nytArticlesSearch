@@ -10,7 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 // Connect to the Mongo DB
-var databaseUri = 'mongodb://localhost/TwitterMomentScrapper';
+var databaseUri = 'mongodb://localhost/SacBeeLatestScrapper';
 
 //mongoose.Promise = Promise;
 
