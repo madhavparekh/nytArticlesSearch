@@ -7,11 +7,9 @@ import {
 	ModalHeader,
 	ModalBody,
 	ModalFooter,
-	Form,
-	Label,
-	Input,
 } from 'reactstrap';
 import Aux from '../hoc/Auxilary';
+import RenderComments from "./RenderComments";
 
 class RenderSaved extends Component {
 	constructor(props) {
@@ -26,7 +24,7 @@ class RenderSaved extends Component {
 	onBtnClick = async (e) => {
 		this.props.item.isSaved = !this.props.item.isSaved;
 
-		var res = await fetch(`/moments/save/${this.props.item._id}`, {
+		var res = await fetch(`/latest/saved/${this.props.item._id}`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -64,18 +62,7 @@ class RenderSaved extends Component {
 					<ModalBody>
 						<div>{this.props.item.description}</div>
 						<hr />
-						<div>
-							<Form>
-									<Label for="Comment">Comment</Label>
-									<Input
-										type="text"
-										name="comment"
-										id="comment"
-										placeholder="Add Comment"
-									/>
-							</Form>
-							<Button className='sm my-1'>Post</Button>
-						</div>
+						<RenderComments item={this.props.item}/>
 					</ModalBody>
 					<ModalFooter>
 						<div className="row">
