@@ -120,13 +120,14 @@ router.post('/latest/save/:id', function(req, res) {
 });
 
 // Route for grabbing a specific Article by id, populate it with it's Comment
-router.get('/latest/:id', function(req, res) {
+router.get('/latest/saved/comments/:id', function(req, res) {
 	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
 	db.SacBeeLatest.findOne({ _id: req.params.id })
 		// ..and populate all of the Comments associated with it
-		.populate('comment')
+		.populate({path: 'comments', options: {sort: {_id: -1}}})
 		.then(function(dbSacBeeLatest) {
 			// If we were able to successfully find an Article with the given id, send it back to the client
+			console.log(dbSacBeeLatest);
 			res.json(dbSacBeeLatest);
 		})
 		.catch(function(err) {
@@ -136,7 +137,7 @@ router.get('/latest/:id', function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Comment
-router.post('/latest/:id', function(req, res) {
+router.post('/latest/saved/comment/:id', function(req, res) {
 	// Create a new Comment and pass the req.body to the entry
 	db.Comment.create(req.body)
 		.then(function(dbComment) {
@@ -145,7 +146,7 @@ router.post('/latest/:id', function(req, res) {
 			// Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
 			return db.SacBeeLatest.findOneAndUpdate(
 				{ _id: req.params.id },
-				{ comment: dbComment._id },
+				{ $push: { comments: dbComment._id } },
 				{ new: true }
 			);
 		})
