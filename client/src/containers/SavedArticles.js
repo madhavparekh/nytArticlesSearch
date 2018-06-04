@@ -25,12 +25,12 @@ class SavedArticles extends Component {
 	};
 
 	componentDidMount() {
-		this.loadData(this.props.personId);
+		this.loadData();
 	}
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.update !== nextProps.update) {
-			this.loadData(nextProps.personId);
+			this.loadData();
 		}
 	}
 
