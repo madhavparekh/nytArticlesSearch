@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Alert, Form, Input } from 'reactstrap';
+import { Button, Form, Input } from 'reactstrap';
+import RenderComment from "./RenderComment";
 
 class RenderComments extends Component {
 	constructor(props) {
@@ -11,7 +12,6 @@ class RenderComments extends Component {
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.loadComments = this.loadComments.bind(this);
-		this.onDismiss = this.onDismiss.bind(this);
 	}
 
 	handleChange(event) {
@@ -54,14 +54,6 @@ class RenderComments extends Component {
     this.loadComments();
 	};
 
-	onDismiss = ()=>{
-
-		this.setState({visible: false})
-		
-	}
-
-
-
 	render() {
 		return (
 			<div>
@@ -82,7 +74,7 @@ class RenderComments extends Component {
           <p>Comments</p>
 					{this.state.comments &&
 						this.state.comments.map((e) => {
-							return <Alert color='secondary' className='p-1 py-0 my-1'>{e.body}</Alert>
+							 return <RenderComment comment={e} reLoad={this.loadComments} id={this.props.item._id}/>
 						})}
 				</div>
 			</div>
