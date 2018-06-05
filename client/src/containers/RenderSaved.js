@@ -24,8 +24,8 @@ class RenderSaved extends Component {
 	onBtnClick = async (e) => {
 		this.props.item.isSaved = !this.props.item.isSaved;
 
-		var res = await fetch(`/latest/saved/${this.props.item._id}`, {
-			method: 'POST',
+		var res = await fetch(`/latest/save/${this.props.item._id}`, {
+			method: 'PUT',
 			headers: {
 				'content-type': 'application/json',
 			},

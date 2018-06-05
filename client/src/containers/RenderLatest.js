@@ -24,7 +24,7 @@ class RenderLatest extends Component {
 		this.props.item.isSaved = !this.props.item.isSaved;
 		
 		var res = await fetch(`/latest/save/${this.props.item._id}`, {
-			method: 'POST',
+			method: 'PUT',
 			headers: {
 				'content-type': 'application/json',
 			},
