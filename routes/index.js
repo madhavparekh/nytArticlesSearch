@@ -1,93 +1,61 @@
 var express = require('express');
 var router = express.Router();
 
-// Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
-var axios = require('axios');
-var cheerio = require('cheerio');
+var request = require('request');
 
 // Require all models
 var db = require('../models');
 
+const nytURL = `https://api.nytimes.com/svc/search/v2/articlesearch.json`;
+
 // Routes
 
-// A GET route for scraping the echoJS website
-router.get('/scrape', function(req, res) {
+// A post route for scraping the echoJS website
+router.post('/search', function(req, res) {
 	// First, we grab the body of the html with request
-	axios.get('http://www.sacbee.com/latest-news/').then(function(response) {
-		// Then, we load that into cheerio and save it to $ for a shorthand selector
-		var $ = cheerio.load(response.data);
+	request.get(
+		{
+			url: nytURL,
+			qs: {
+				'api-key': 'db88f4c617ed41e1a9b08bcb955573e4',
+				q: req.body.q,
+				begin_date: req.body.begin_date,
+				end_date: req.body.end_date,
+				sort: req.body.sort,
+				page: req.body.page,
+			},
+		},
+		function(err, response, body) {
+			if (err) return res.json(err);
 
-		// Now, we grab every h2 within an article tag, and do the following:
-		$('.teaser').each(function(i, element) {
-			// Save an empty result object
-			var result = {};
+			body = JSON.parse(body);
 
-			// Add the text and href of every link, and save them as properties of the result object
-			result.title = $(this)
-				.children('.title')
-				.children('a')
-				.text()
-				.trim();
-			result.description = $(this)
-				.text()
-				.trim();
-			result.link = $(this)
-				.children('.title')
-				.children('a')
-				.attr('href');
-			result.img = $(this)
-				.children('div')
-				.children('div')
-				.children('a')
-				.children('img')
-				.attr('data-proxy-image');
+			var docs = [];
 
-			db.SacBeeLatest.findOneAndUpdate({ link: result.link }, result, {
-				upsert: true,
-				new: true,
-			})
-				.then(function(dbSacBeeLatest) {
-					// View the added result in the console
-					//console.log(dbSacBeeLatest);
-				})
-				.catch(function(err) {
-					// If an error occurred, send it to the client
-					return res.json(err);
-				});
-		});
-
-		// If we were able to successfully scrape and save an Article, send a message to the client
-		res.send('Scrapped');
-	});
+			body.response.docs.map((doc) => {
+				let trimmedDoc = {
+					snippet: doc.snippet,
+					pub_date: doc.pub_date,
+					headline: doc.headline.main,
+					web_url: doc.web_url,
+					source: doc.source,
+				};
+				docs.push(trimmedDoc);
+			});
+			return res.json(docs);
+		}
+	);
 });
 
 // Route for getting all Articles from the db
-router.get('/latest', function(req, res) {
+router.get('/saved', function(req, res) {
 	// Grab every document in the Articles collection
-	db.SacBeeLatest.find({})
+	db.NYTSavedArticles.find({ isSaved: true })
 		.sort({ _id: -1 })
 		.limit(20)
-		.then(function(dbSacBeeLatest) {
+		.then(function(dbNYTSavedArticles) {
 			// If we were able to successfully find Articles, send them back to the client
-			res.json(dbSacBeeLatest);
-		})
-		.catch(function(err) {
-			// If an error occurred, send it to the client
-			res.json(err);
-		});
-});
-
-// Route for getting all Articles from the db
-router.get('/latest/saved', function(req, res) {
-	// Grab every document in the Articles collection
-	db.SacBeeLatest.find({ isSaved: true })
-		.sort({ _id: -1 })
-		.limit(20)
-		.then(function(dbSacBeeLatest) {
-			// If we were able to successfully find Articles, send them back to the client
-			res.json(dbSacBeeLatest);
+			res.json(dbNYTSavedArticles);
 		})
 		.catch(function(err) {
 			// If an error occurred, send it to the client
@@ -96,12 +64,12 @@ router.get('/latest/saved', function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Comment
-router.put('/latest/save/:id', function(req, res) {
+router.put('/save/:id', function(req, res) {
 	// Create a new Comment and pass the req.body to the entry
-	db.SacBeeLatest.findByIdAndUpdate(req.params.id, req.body, { new: true })
-		.then(function(dbSacBeeLatest) {
+	db.NYTSavedArticles.findByIdAndUpdate(req.params.id, req.body, { new: true })
+		.then(function(dbNYTSavedArticles) {
 			// If we were able to successfully update an Article, send it back to the client
-			res.json(dbSacBeeLatest);
+			res.json(dbNYTSavedArticles);
 		})
 		.catch(function(err) {
 			// If an error occurred, send it to the client
@@ -112,12 +80,12 @@ router.put('/latest/save/:id', function(req, res) {
 // Route for grabbing a specific Article by id, populate it with it's Comment
 router.get('/latest/saved/comments/:id', function(req, res) {
 	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-	db.SacBeeLatest.findOne({ _id: req.params.id })
+	db.NYTSavedArticles.findOne({ _id: req.params.id })
 		// ..and populate all of the Comments associated with it
 		.populate({ path: 'comments', options: { sort: { _id: -1 } } })
-		.then(function(dbSacBeeLatest) {
+		.then(function(dbNYTSavedArticles) {
 			// If we were able to successfully find an Article with the given id, send it back to the client
-			res.json(dbSacBeeLatest);
+			res.json(dbNYTSavedArticles);
 		})
 		.catch(function(err) {
 			// If an error occurred, send it to the client
@@ -133,15 +101,15 @@ router.post('/latest/saved/comment/:id', function(req, res) {
 			// If a Comment was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Comment
 			// { new: true } tells the query that we want it to return the updated User -- it returns the original by default
 			// Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-			return db.SacBeeLatest.findOneAndUpdate(
+			return db.NYTSavedArticles.findOneAndUpdate(
 				{ _id: req.params.id },
 				{ $push: { comments: dbComment._id } },
 				{ new: true }
 			);
 		})
-		.then(function(dbSacBeeLatest) {
+		.then(function(dbNYTSavedArticles) {
 			// If we were able to successfully update an Article, send it back to the client
-			res.json(dbSacBeeLatest);
+			res.json(dbNYTSavedArticles);
 		})
 		.catch(function(err) {
 			// If an error occurred, send it to the client
@@ -152,13 +120,13 @@ router.post('/latest/saved/comment/:id', function(req, res) {
 router.delete('/saved/:id/comment/:comm_id', (req, res) => {
 	db.Comment.findByIdAndRemove(req.params.comm_id)
 		.then((dbComment) => {
-			return db.SacBeeLatest.findByIdAndUpdate(
+			return db.NYTSavedArticles.findByIdAndUpdate(
 				{ _id: req.params.id },
 				{ $pull: { comments: dbComment._id } },
 				{ new: true }
 			);
 		})
-		.then((dbSacBeeLatest) => {
+		.then((dbNYTSavedArticles) => {
 			const response = {
 				message: 'Comment successfully deleted',
 			};

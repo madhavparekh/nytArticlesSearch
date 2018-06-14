@@ -2,14 +2,13 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 
 // Connect to the Mongo DB
-var databaseUri = 'mongodb://localhost/SacBeeLatestScrapper';
+var databaseUri = 'mongodb://localhost/nytreact';
 
 //mongoose.Promise = Promise;
 
