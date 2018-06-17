@@ -21,8 +21,6 @@ router.post('/search', function(req, res) {
 				q: req.body.q,
 				begin_date: req.body.begin_date,
 				end_date: req.body.end_date,
-				sort: req.body.sort,
-				page: req.body.page,
 			},
 		},
 		function(err, response, body) {
