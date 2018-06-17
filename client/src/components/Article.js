@@ -6,14 +6,13 @@ import {
 	Card,
 	CardBody,
 	Collapse,
-	CardText
+	CardText,
 } from 'reactstrap';
 import Aux from '../hoc/Auxilary';
 
-class RenderLatest extends Component {
+class Article extends Component {
 	constructor(props) {
 		super(props);
-		this.toggle = this.toggle.bind(this);
 		this.state = {
 			collapse: false,
 			isSaved: false,
@@ -21,15 +20,13 @@ class RenderLatest extends Component {
 	}
 
 	onBtnClick = async (e) => {
-		this.props.item.isSaved = !this.props.item.isSaved;
-		
-		var res = await fetch(`/latest/save/${this.props.item._id}`, {
-			method: 'PUT',
+		var res = await fetch(`/article/save`, {
+			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
 			},
 			credentials: 'same-origin',
-			body: JSON.stringify(this.props.item),
+			body: JSON.stringify(this.props.article),
 		});
 		if (res.status === 401) {
 			this.setState({ fail: true });
@@ -37,16 +34,12 @@ class RenderLatest extends Component {
 			res = await res.json();
 
 			this.props.reloadData();
-
-			// this.setState({
-			// 	isSaved: !this.state.isSaved,
-			// });
 		}
 	};
 
-	toggle() {
+	toggle = () => {
 		this.setState({ collapse: !this.state.collapse });
-	}
+	};
 
 	render() {
 		return (
@@ -57,41 +50,41 @@ class RenderLatest extends Component {
 						onClick={this.toggle}
 						style={{ marginBottom: '1rem' }}
 					>
-						<h5>{this.props.item.title}</h5>
+						<h5>{this.props.article.headline}</h5>
 					</Alert>
 					<Collapse isOpen={this.state.collapse}>
 						<Card>
 							<CardBody>
-								<CardText>{this.props.item.description}</CardText>
+								<CardText>
+									{this.props.article.snippet ||
+										'Click on Article Link for more details'}
+								</CardText>
+								<CardText>
+									{this.props.article.source &&
+										`Source: ${this.props.article.source}`}
+									{this.props.article.pub_date &&
+										` |	Published On:
+									${this.props.article.pub_date}`}
+								</CardText>
 								<ButtonGroup>
 									<Button
 										color="secondary"
 										className="mx-1"
-										href={this.props.item.link}
+										href={this.props.article.web_url}
 										target="_blank"
 									>
 										Article Link
 									</Button>
 									<Button
-										color="secondary"
 										className="mx-1"
-										href={this.props.item.img}
-										target="_blank"
+										color="info"
+										onClick={() => this.onBtnClick(1)}
+										active={this.state.rSelected === 1}
 									>
-										Image Link
+										Save
 									</Button>
 								</ButtonGroup>
 							</CardBody>
-							<div className="text-center">
-								<Button
-									className="col-sm-1 m-2"
-									color="info"
-									onClick={() => this.onBtnClick(1)}
-									active={this.state.rSelected === 1}
-								>
-									{this.props.item.isSaved ? 'Saved' : 'Save'}
-								</Button>
-							</div>
 						</Card>
 					</Collapse>
 				</div>
@@ -100,4 +93,4 @@ class RenderLatest extends Component {
 	}
 }
 
-export default RenderLatest;
+export default Article;

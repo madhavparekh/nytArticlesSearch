@@ -9,7 +9,7 @@ import {
 	ModalFooter,
 } from 'reactstrap';
 import Aux from '../hoc/Auxilary';
-import RenderComments from "./RenderComments";
+import RenderComments from './RenderComments';
 
 class RenderSaved extends Component {
 	constructor(props) {
@@ -22,15 +22,15 @@ class RenderSaved extends Component {
 	}
 
 	onBtnClick = async (e) => {
-		this.props.item.isSaved = !this.props.item.isSaved;
+		//this.props.article.isSaved = !this.props.article.isSaved;
 
-		var res = await fetch(`/latest/save/${this.props.item._id}`, {
+		var res = await fetch(`/latest/save/${this.props.article._id}`, {
 			method: 'PUT',
 			headers: {
 				'content-type': 'application/json',
 			},
 			credentials: 'same-origin',
-			body: JSON.stringify(this.props.item),
+			body: JSON.stringify(this.props.article),
 		});
 		if (res.status === 401) {
 			this.setState({ fail: true });
@@ -52,17 +52,17 @@ class RenderSaved extends Component {
 					onClick={this.toggle}
 					style={{ marginBottom: '1rem' }}
 				>
-					<h5>{this.props.item.title}</h5>
+					<h5>{this.props.article.headline}</h5>
 				</Alert>
 
 				<Modal isOpen={this.state.modal} toggle={this.toggle}>
 					<ModalHeader toggle={this.toggle}>
-						{this.props.item.title}
+						{this.props.article.title}
 					</ModalHeader>
 					<ModalBody>
-						<div>{this.props.item.description}</div>
+						<div>{this.props.article.snippet}</div>
 						<hr />
-						<RenderComments item={this.props.item}/>
+						<RenderComments article={this.props.article} />
 					</ModalBody>
 					<ModalFooter>
 						<div className="row">
@@ -70,18 +70,10 @@ class RenderSaved extends Component {
 								<Button
 									color="secondary"
 									className="mx-1"
-									href={this.props.item.link}
+									href={this.props.article.web_link}
 									target="_blank"
 								>
 									Article Link
-								</Button>
-								<Button
-									color="secondary"
-									className="mx-1"
-									href={this.props.item.img}
-									target="_blank"
-								>
-									Image Link
 								</Button>
 								<Button
 									className="mx-1"
@@ -89,7 +81,7 @@ class RenderSaved extends Component {
 									onClick={() => this.onBtnClick(1)}
 									active={this.state.rSelected === 1}
 								>
-									Saved
+									Delete
 								</Button>
 							</ButtonGroup>
 						</div>

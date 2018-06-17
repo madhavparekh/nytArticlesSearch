@@ -25,10 +25,42 @@ class Search extends Component {
 		});
 	};
 
-	onClickHandler = (e) => {
-		e.preventDefault();
+	onClickHandler = async (e) => {
+		let searchParam = {};
+		searchParam.q = this.state.q;
 
-		console.log(this.state);
+		if (this.state.begin_date)
+			searchParam.begin_date = this.state.begin_date.replace(/-/g, '');
+
+		if (this.state.end_date)
+			searchParam.end_date = this.state.end_date.replace(/-/g, '');
+
+		var res = await fetch('/search', {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			credentials: 'same-origin',
+			body: JSON.stringify(searchParam),
+		});
+		if (res.status === 401) {
+			console.log('error');
+			this.setState({ fail: true });
+		} else if (res.status === 200) {
+			res = await res.json();
+			console.log(res);
+			this.props.onSubmitBtnHandler(res);
+		}
+
+		// request
+		// 	.post('/search')
+		// 	.send(searchParam) // sends a JSON post body
+		// 	.set('accept', 'json')
+		// 	.end((err, res) => {
+		// 		// Calling the end function will send the request
+		// 		if (err) throw err;
+		// 		this.props.onSubmitBtnHandler(res.body);
+		// 	});
 	};
 
 	validateDates = (endDate) => {

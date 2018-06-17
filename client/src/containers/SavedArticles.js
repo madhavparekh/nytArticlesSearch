@@ -6,12 +6,12 @@ class SavedArticles extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			moments: [],
+			SavedArticles: [],
 		};
 	}
 
 	loadData = async () => {
-		var res = await fetch('/latest/saved/', {
+		var res = await fetch('/articles/saved/', {
 			method: 'GET',
 		});
 		if (res.status === 401) {
@@ -19,7 +19,7 @@ class SavedArticles extends Component {
 		} else if (res.status === 200) {
 			res = await res.json();
 			this.setState({
-				moments: res,
+				SavedArticles: res,
 			});
 		}
 	};
@@ -37,10 +37,14 @@ class SavedArticles extends Component {
 	render() {
 		return (
 			<Aux>
-				{this.state.moments &&
-					this.state.moments.map((item, indx) => {
+				{this.state.SavedArticles &&
+					this.state.SavedArticles.map((article, indx) => {
 						return (
-							<RenderSaved key={indx} item={item} reloadData={this.loadData} />
+							<RenderSaved
+								key={indx}
+								article={article}
+								reloadData={this.loadData}
+							/>
 						);
 					})}
 			</Aux>
