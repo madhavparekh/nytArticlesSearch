@@ -18,9 +18,7 @@ router.post('/search', function(req, res) {
 			url: nytURL,
 			qs: {
 				'api-key': 'db88f4c617ed41e1a9b08bcb955573e4',
-				q: req.body.q,
-				begin_date: req.body.begin_date,
-				end_date: req.body.end_date,
+				...req.body,
 			},
 		},
 		function(err, response, body) {
@@ -33,11 +31,12 @@ router.post('/search', function(req, res) {
 			body.response.docs.map((doc) => {
 				let trimmedDoc = {
 					snippet: doc.snippet,
-					pub_date: doc.pub_date,
 					headline: doc.headline.main,
 					web_url: doc.web_url,
 					source: doc.source,
 				};
+				if (doc.pub_date)
+					trimmedDoc.pub_date = new Date(doc.pub_date).toDateString();
 				docs.push(trimmedDoc);
 			});
 			return res.json(docs);
@@ -45,12 +44,34 @@ router.post('/search', function(req, res) {
 	);
 });
 
+router.post('/article/save', function(req, res) {
+	// First, we grab the body of the html with request
+	console.log(req.body);
+
+	db.NYTSavedArticles.findOneAndUpdate(
+		{ headline: req.body.headline },
+		req.body,
+		{
+			upsert: true,
+			new: true,
+		}
+	)
+		.then(function(NYTSavedArticle) {
+			// View the added result in the console
+			console.log(NYTSavedArticle);
+		})
+		.catch(function(err) {
+			// If an error occurred, send it to the client
+			return res.json(err);
+		});
+	res.send('ok');
+});
+
 // Route for getting all Articles from the db
-router.get('/saved', function(req, res) {
+router.get('/articles/saved', function(req, res) {
 	// Grab every document in the Articles collection
-	db.NYTSavedArticles.find({ isSaved: true })
-		.sort({ _id: -1 })
-		.limit(20)
+	console.log('getting saved articles...')
+	db.NYTSavedArticles.find()
 		.then(function(dbNYTSavedArticles) {
 			// If we were able to successfully find Articles, send them back to the client
 			res.json(dbNYTSavedArticles);
