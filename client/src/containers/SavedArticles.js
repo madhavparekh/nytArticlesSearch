@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Aux from '../hoc/Auxilary';
 import RenderSaved from './RenderSaved';
 
 class SavedArticles extends Component {
@@ -36,7 +35,7 @@ class SavedArticles extends Component {
 
 	render() {
 		return (
-			<Aux>
+			<div className="container my-3">
 				{this.state.SavedArticles &&
 					this.state.SavedArticles.map((article, indx) => {
 						return (
@@ -47,7 +46,7 @@ class SavedArticles extends Component {
 							/>
 						);
 					})}
-			</Aux>
+			</div>
 		);
 	}
 }
