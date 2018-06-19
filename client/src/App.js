@@ -13,7 +13,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			endpoint: 'http://127.0.0.1:3001',
+			endpoint: process.env.HEROKU_URL || 'http://127.0.0.1:3001',
 			saved: false,
 			modal: false,
 		};
