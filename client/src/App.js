@@ -21,7 +21,7 @@ class App extends Component {
 
 	componentDidMount() {
 		const { endpoint } = this.state;
-		const socket = io(endpoint);
+		const socket = io();
 		socket.on('connection', (savedFlag) => {
 			this.setState({ modal: savedFlag });
 		});
