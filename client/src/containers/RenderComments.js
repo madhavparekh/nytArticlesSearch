@@ -19,7 +19,7 @@ class RenderComments extends Component {
 	}
 
 	loadComments = async () => {
-		var res = await fetch(`/latest/saved/comments/${this.props.article._id}`, {
+		var res = await fetch(`/article/saved/comments/${this.props.article._id}`, {
 			method: 'GET',
 		});
 		if (res.status === 401) {
@@ -37,7 +37,7 @@ class RenderComments extends Component {
 	}
 
 	onBtnClick = async (e) => {
-		var res = await fetch(`/latest/saved/comment/${this.props.article._id}`, {
+		var res = await fetch(`/article/saved/comment/${this.props.article._id}`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -73,9 +73,10 @@ class RenderComments extends Component {
 				<div className="my-1">
 					<p>Comments</p>
 					{this.state.comments &&
-						this.state.comments.map((e) => {
+						this.state.comments.map((e, indx) => {
 							return (
 								<RenderComment
+									key={indx}
 									comment={e}
 									reLoad={this.loadComments}
 									id={this.props.article._id}

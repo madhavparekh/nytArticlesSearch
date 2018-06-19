@@ -22,10 +22,9 @@ class RenderSaved extends Component {
 	}
 
 	onBtnClick = async (e) => {
-		//this.props.article.isSaved = !this.props.article.isSaved;
-
-		var res = await fetch(`/latest/save/${this.props.article._id}`, {
-			method: 'PUT',
+		this.toggle();
+		var res = await fetch(`/article/saved/${this.props.article._id}`, {
+			method: 'DELETE',
 			headers: {
 				'content-type': 'application/json',
 			},
@@ -57,10 +56,14 @@ class RenderSaved extends Component {
 
 				<Modal isOpen={this.state.modal} toggle={this.toggle}>
 					<ModalHeader toggle={this.toggle}>
-						{this.props.article.title}
+						{this.props.article.headline}
 					</ModalHeader>
 					<ModalBody>
-						<div>{this.props.article.snippet}</div>
+						<div>
+							{this.props.article.snippet
+								? this.props.article.snippet
+								: 'Click Article Link for detail'}
+						</div>
 						<hr />
 						<RenderComments article={this.props.article} />
 					</ModalBody>
@@ -70,7 +73,7 @@ class RenderSaved extends Component {
 								<Button
 									color="secondary"
 									className="mx-1"
-									href={this.props.article.web_link}
+									href={this.props.article.web_url}
 									target="_blank"
 								>
 									Article Link
@@ -79,7 +82,7 @@ class RenderSaved extends Component {
 									className="mx-1"
 									color="info"
 									onClick={() => this.onBtnClick(1)}
-									active={this.state.rSelected === 1}
+									// active={this.state.rSelected === 1}
 								>
 									Delete
 								</Button>
