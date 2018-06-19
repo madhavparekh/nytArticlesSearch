@@ -45,26 +45,15 @@ class Search extends Component {
 		});
 		if (res.status === 401) {
 			console.log('error');
-			this.setState({ fail: true });
 		} else if (res.status === 200) {
 			res = await res.json();
-			console.log(res);
 			this.props.onSubmitBtnHandler(res);
 		}
-
-		// request
-		// 	.post('/search')
-		// 	.send(searchParam) // sends a JSON post body
-		// 	.set('accept', 'json')
-		// 	.end((err, res) => {
-		// 		// Calling the end function will send the request
-		// 		if (err) throw err;
-		// 		this.props.onSubmitBtnHandler(res.body);
-		// 	});
 	};
 
 	validateDates = (endDate) => {
-		if (Date.parse(endDate) >= Date.parse(this.state.begin_date))
+		//NYT returns zero articles when begin_date === end_date - end_date needs to be next day if begin_date is set
+		if (Date.parse(endDate) > Date.parse(this.state.begin_date))
 			this.setState({ endDateInPast: true });
 		else this.setState({ endDateInPast: false });
 	};
