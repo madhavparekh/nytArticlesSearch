@@ -20,6 +20,7 @@ class Article extends Component {
 	}
 
 	onBtnClick = async (e) => {
+		this.toggle();
 		var res = await fetch(`/article/save`, {
 			method: 'POST',
 			headers: {
@@ -32,8 +33,6 @@ class Article extends Component {
 			this.setState({ fail: true });
 		} else if (res.status === 200) {
 			res = await res.json();
-
-			this.props.reloadData();
 		}
 	};
 
