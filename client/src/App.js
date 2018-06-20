@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import {
+	BrowserRouter as Router,
+	Route,
+	NavLink,
+	Switch,
+} from 'react-router-dom';
+import { Navbar, NavbarBrand, Nav, NavItem } from 'reactstrap';
 
 import { Modal, ModalHeader } from 'reactstrap';
 
@@ -13,14 +18,12 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			endpoint: process.env.HEROKU_URL || 'http://127.0.0.1:3001',
 			saved: false,
 			modal: false,
 		};
 	}
 
 	componentDidMount() {
-		const { endpoint } = this.state;
 		const socket = io();
 		socket.on('connection', (savedFlag) => {
 			this.setState({ modal: savedFlag });
@@ -39,16 +42,35 @@ class App extends Component {
 						<NavbarBrand href="/">NY Times - Search Articles</NavbarBrand>
 						<Nav className="ml-auto" navbar>
 							<NavItem>
-								<NavLink href="/">Search</NavLink>
+								<NavLink
+									exact
+									activeStyle={{
+										color: 'darkgray',
+									}}
+									style={{ color: 'white' }}
+									to="/"
+								>
+									Search
+								</NavLink>
 							</NavItem>
-							<NavItem>
-								<NavLink href="/SavedArticles/">Saved Articles</NavLink>
+							<NavItem className="mx-3">
+								<NavLink
+									exact
+									activeStyle={{
+										color: 'darkgray',
+									}}
+									style={{ color: 'white' }}
+									to="/SavedArticles"
+								>
+									Saved Articles
+								</NavLink>
 							</NavItem>
 						</Nav>
 					</Navbar>
-					<Route exact path="/" component={Home} />
-					<Route exact path="/SavedArticles" component={SavedArticles} />
-
+					<Switch>
+						<Route exact path="/" component={Home} />
+						<Route exact path="/SavedArticles" component={SavedArticles} />
+					</Switch>
 					<Modal isOpen={this.state.modal} toggle={this.toggle}>
 						<ModalHeader toggle={this.toggle}>
 							Some one saved an article!
